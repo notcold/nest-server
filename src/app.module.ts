@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
+import { CacheService } from './cache/cache.service';
 import config from './config/config.base';
 
 @Module({
@@ -15,7 +16,7 @@ import config from './config/config.base';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CacheService],
 })
 export class AppModule {
   constructor(private connection: Connection) {}

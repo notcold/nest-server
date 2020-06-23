@@ -1,18 +1,44 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Session,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
+import { CreateUserDto } from './user.dto';
 
-@Controller('User')
+@Controller('/user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.getUser(id);
+  async findOne(@Param('id') id: string): Promise<User> {
+    return await this.usersService.getUser(id);
   }
 
-  @Post(':user')
-  addUser(@Param('user') user: User): Promise<User> {
-    return this.usersService.addUser(user);
+  @Post('/register')
+  async register(@Body('user') user: CreateUserDto): Promise<User> {
+    return await this.usersService.addUser(user);
+  }
+
+  @Post('/login')
+  async login(
+    @Param('userName') userName: string,
+    @Param('password') password: string,
+    @Session() session,
+  ): Promise<User | string> {
+    const user = await this.usersService.findOne(userName, password);
+    if (user?.id) {
+      session[Date.now()] = user.id;
+    } else {
+      return '用户名或密码错误';
+    }
+    console.log('user', user)
+    return user;
   }
 }

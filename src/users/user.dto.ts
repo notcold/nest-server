@@ -1,12 +1,16 @@
 import { IsString, IsBoolean } from 'class-validator';
 
 export class CreateUserDto {
+  
   @IsString()
-  readonly firstName: string;
+  readonly nickName: string;
 
   @IsString()
-  readonly lastName: number;
+  readonly userName: string;
+
+  @IsString()
+  readonly password: string;
 
   @IsBoolean()
-  readonly isActive: string;
+  readonly isActive: boolean;
 }
