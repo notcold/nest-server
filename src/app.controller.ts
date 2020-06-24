@@ -3,9 +3,10 @@ import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() {}
   @Get('/health')
   checkService(): string {
-    return '';
+    console.log('health');
+    return '123';
   }
 }

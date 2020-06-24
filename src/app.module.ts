@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
-import { CacheService } from './cache/cache.service';
 import config from './config/config.base';
+import { APP_PIPE } from '@nestjs/core';
+import { SessionModule } from 'nestjs-session';
 
 @Module({
   imports: [
@@ -14,9 +14,17 @@ import config from './config/config.base';
       autoLoadEntities: true,
     } as TypeOrmModuleOptions),
     UsersModule,
+    SessionModule.forRoot({
+      session: { secret: 'keyboard' },
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, CacheService],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({ transform: true }),
+    },
+  ],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
